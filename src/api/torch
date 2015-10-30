@@ -1,0 +1,45 @@
+--
+-- Torch API
+--
+-- (c) 2015, random-host.com
+--
+
+-- configuration
+local enableTorches = 1
+local torchSlot = 16
+
+-- enables or disables placing of torches
+function setEnabled(enable)
+    enableTorches = enable
+end
+
+-- set the torch slot
+function setSlot(slot)
+    torchSlot = slot
+end
+
+-- checks the torch storage
+local function check()
+    if turtle.getItemCount(torchSlot) == 0 then
+        print("Please insert torches. Press any key to continue.")
+        local event = os.pullEvent("key")
+        check()
+    end
+end
+
+-- places a torch
+function place(placeUp)
+    if enableTorches == 1 then
+        check()
+        turtle.select(torchSlot)
+        if placeUp then
+            turtle.placeUp()
+        else
+            turtle.placeDown()
+        end
+    end
+end
+
+
+
+

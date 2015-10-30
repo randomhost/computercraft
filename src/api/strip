@@ -1,0 +1,192 @@
+--
+-- Strip mining API
+--
+-- (c) 2015, random-host.com
+--
+
+-- configuration
+local stripHeight = 4
+local stripCount = 4
+local stripInterval = 3
+local stripLength = 40
+local torchInterval = 3
+
+-- runtime variables
+local torchIntervalCounter = 0
+local torchPlaceHeight = 0
+local shouldPlaceTorch = false
+local isEvenStrip = true
+
+-- load APIs
+os.loadAPI("api/fuel")
+os.loadAPI("api/torch")
+
+-- sets the height of the strip mining tunnels
+function setStripHeight(height)
+    stripHeight = height
+end
+
+-- sets the length of the strip mining tunnels (must be an even number)
+function setStripLength(length)
+    stripLength = length
+end
+
+-- sets the amount of tunnels to dig
+function setStripCount(count)
+    stripCount = count
+end
+
+-- sets the interval of the tunnels (default: every 3 blocks)
+function setStripInterval(interval)
+    stripInterval = interval
+end
+
+-- enables or disables placing of torches
+function setEnableTorches(enable)
+    torch.setEnabled(enable)
+end
+
+-- sets the storage slot for torches
+function setTorchSlot(slot)
+    torch.setSlot(slot)
+end
+
+-- sets interval for placing torches
+function setTorchInterval(interval)
+    torchInterval = interval
+end
+
+-- moves forward removing everything which might be in the way
+local function forceForward()
+    fuel.check()
+    while turtle.forward() == false do
+        turtle.dig()
+        turtle.attack()
+    end
+end
+
+-- moves backwards removing everything which might be in the way
+local function forceBack()
+    fuel.check()
+    if turtle.back() == false then
+        turtle.turnLeft()
+        turtle.turnLeft()
+        forceForward()
+        turtle.turnLeft()
+        turtle.turnLeft()
+    end
+end
+
+-- moves upwards removing everything which might be in the way
+local function forceUp()
+    fuel.check()
+    while turtle.up() == false do
+        turtle.digUp()
+        turtle.attackUp()
+    end
+end
+
+-- moves downwards removing everything which might be in the way
+local function forceDown()
+    fuel.check()
+    while turtle.down() == false do
+        turtle.digDown()
+        turtle.attackDown()
+    end
+end
+
+-- digs up or down one block
+local function stripRow(reversed)
+    if reversed == false then
+        turtle.dig()
+        turtle.digUp()
+        forceUp()
+    else
+        turtle.dig()
+        turtle.digDown()
+        forceDown()
+    end
+end
+
+-- digs a vertical column
+local function stripColumn(reversed)
+
+    torchIntervalCounter = torchIntervalCounter + 1
+
+    forceForward()
+
+    for i = 0, stripHeight - 2 do
+        stripRow(reversed)
+
+        if (torchIntervalCounter == torchInterval or shouldPlaceTorch) then
+
+            if (not reversed and torchPlaceHeight == i) or
+                    (reversed and (stripHeight - torchPlaceHeight) == i) then
+                torch.place(reversed)
+
+                shouldPlaceTorch = false
+                torchIntervalCounter = 0
+            end
+        end
+    end
+
+    forceForward()
+end
+
+-- runs a strip iteration
+local function strip(repetitions)
+
+    torchIntervalCounter = 0
+
+    for i = 0, repetitions - 1 do
+        stripColumn(i % 2 == 1)
+    end
+
+    -- move down if stopped on even repetition count
+    if repetitions % 2 == 1 then
+        for i = 0, stripHeight - 2 do
+            forceDown()
+        end
+    end
+end
+
+-- starts the next strip
+local function nextStrip()
+
+    if isEvenStrip then
+        turtle.turnRight()
+    else
+        turtle.turnLeft()
+    end
+
+    shouldPlaceTorch = true
+
+    strip(stripInterval)
+
+    for i = 0, stripInterval - 1 do
+        forceBack()
+    end
+
+    if isEvenStrip then
+        turtle.turnRight()
+    else
+        turtle.turnLeft()
+    end
+
+    isEvenStrip = isEvenStrip == false
+end
+
+-- runs the strip mining program with set parameters
+function run()
+
+    local stripIterations = math.ceil(stripLength / 2)
+    torchPlaceHeight = math.floor(stripHeight / 2)
+
+    for i = 0, stripCount - 1 do
+        print("Starting strip " .. i + 1)
+        strip(stripIterations)
+        nextStrip()
+    end
+
+    print("Program finished.")
+end

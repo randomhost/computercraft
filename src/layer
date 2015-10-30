@@ -1,0 +1,22 @@
+--
+-- Mines a layer of blocks such as obsidian
+--
+-- For this, strip heigth and strip interval must be set to 1.
+-- Torches won't make any sense here so they are disabled, too.
+--
+-- (c) 2015, random-host.com
+
+-- load strip mining API
+os.loadAPI("api/strip")
+
+-- configuration
+strip.setStripLength(10) -- layer length
+strip.setStripCount(6) -- layer width
+
+-- parameters for digging a layer of blocks
+strip.setStripHeight(1)
+strip.setStripInterval(1)
+strip.setEnableTorches(0)
+
+-- run program
+strip.run()

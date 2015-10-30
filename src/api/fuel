@@ -1,0 +1,29 @@
+--
+-- Fuel API
+--
+-- (c) 2015, random-host.com
+--
+
+-- interates through the inventory and attempts to refuel
+local function refuelAll()
+    for n = 1, 16 do
+        local nCount = turtle.getItemCount(n)
+        if nCount > 0 then
+            turtle.select(n)
+            turtle.refuel(nCount)
+        end
+    end
+    print("Fuel is now " .. turtle.getFuelLevel())
+end
+
+-- checks the fuel level
+function check()
+    if turtle.getFuelLevel() == 0 then
+        refuelAll()
+        if turtle.getFuelLevel() == 0 then
+            print("Please insert fuel. Press any key to continue.")
+            local event = os.pullEvent("key")
+            check()
+        end
+    end
+end

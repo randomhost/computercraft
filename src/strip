@@ -1,0 +1,26 @@
+--
+-- Classical strip mining program
+--
+-- Height, length and count can be adjusted to fit personal preferences, but
+-- increasing them will most likely cause the turtle to run out of inventory
+-- space at some point.
+--
+-- Torch placing is enabled by default but still a bit experimental.
+--
+-- (c) 2015, random-host.com
+
+-- load strip mining API
+os.loadAPI("api/strip")
+
+-- configuration
+strip.setStripHeight(4)
+strip.setStripLength(30)
+strip.setStripCount(2)
+strip.setEnableTorches(1)
+strip.setTorchSlot(16)
+
+-- parameters for classical strip mining
+strip.setStripInterval(3)
+
+-- run program
+strip.run()
