@@ -1,0 +1,19 @@
+--
+-- Controls a passively cooled Big Reactors reactor
+--
+-- (c) 2015, random-host.com
+
+-- load localization API
+os.loadAPI('api/l10n')
+l10n.setLanguage('en')
+
+-- load Big Reactors control API
+os.loadAPI('api/reactor')
+
+-- configuration
+reactor.setMonitorName('top')
+reactor.setReactorName('BigReactors-Reactor_0')
+reactor.setEnableRedstoneControl(false)
+
+-- run program
+reactor.run()

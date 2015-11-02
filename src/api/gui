@@ -1,0 +1,150 @@
+--
+-- GUI API
+--
+-- (c) 2015, random-host.com
+--
+
+-- configuration
+local textScale = 0.5
+local defaultBackgroundColor = colors.black
+local defaultForegroundColor = colors.white
+local barBackgroundColor = colors.green
+local barForegroundColor = colors.white
+local statusBarActiveBackgroundColor = colors.green
+local statusBarActiveForegroundColor = colors.white
+local statusBarInactiveBackgroundColor = colors.gray
+local statusBarInactiveForegroundColor = colors.white
+
+-- runtime variables
+local monitor
+
+-- sets the text scale
+function setTextScale(scale)
+    textScale = scale
+end
+
+-- sets the default background color
+function setDefaultBackgroundColor(color)
+    defaultBackgroundColor = color
+end
+
+-- sets the default foreground color
+function setDefaultForegroundColor(color)
+    defaultForegroundColor = color
+end
+
+-- sets the background color for bars
+function setBarBackgroundColor(color)
+    barBackgroundColor = color
+end
+
+-- sets the foreground color for bars
+function setBarForegroundColor(color)
+    barForegroundColor = color
+end
+
+-- sets the background color for active status bar sections
+function setStatusBarActiveBackgroundColor(color)
+    statusBarActiveBackgroundColor = color
+end
+
+-- sets the foreground color for active status bars section
+function setStatusBarActiveForegroundColor(color)
+    statusBarActiveForegroundColor = color
+end
+
+-- sets the background color for inactive status bar sections
+function setStatusBarInactiveBackgroundColor(color)
+    statusBarInactiveBackgroundColor = color
+end
+
+-- sets the foreground color for inactive status bars section
+function setStatusBarInactiveForegroundColor(color)
+    statusBarInactiveForegroundColor = color
+end
+
+-- sets the monitor to be used
+function setMonitor(monitorPosition)
+    monitor = peripheral.wrap(monitorPosition)
+    if not monitor or peripheral.getType(monitorPosition) ~= 'monitor' then
+        error('Error: Couldn\'t find monitor')
+    end
+
+    monitor.setBackgroundColor(defaultBackgroundColor)
+    monitor.setTextColor(defaultForegroundColor)
+    monitor.setTextScale(textScale)
+
+    return monitor
+end
+
+-- returns the monitor
+function getMonitor()
+    return monitor
+end
+
+-- displays the given text horizontally centered
+function centerText(text)
+    local x, y = monitor.getSize()
+    local x2, y2 = monitor.getCursorPos()
+    monitor.setCursorPos(math.ceil((x / 2) - (text:len() / 2)), y2)
+    monitor.write(text)
+end
+
+-- displays a title bar with the given text
+function displayTitleBar(text)
+    local cursorX, cursorY = monitor.getCursorPos()
+
+    monitor.setBackgroundColor(barBackgroundColor)
+    monitor.setTextColor(barForegroundColor)
+    monitor.setCursorPos(1, 1)
+    monitor.clearLine()
+
+    centerText(text)
+
+    monitor.setBackgroundColor(defaultBackgroundColor)
+    monitor.setTextColor(defaultForegroundColor)
+    monitor.setCursorPos(cursorX, cursorY)
+end
+
+-- displays a footer bar with the given text
+function displayFooterBar(text)
+    local cursorX, cursorY = monitor.getCursorPos()
+    local w, h = monitor.getSize()
+
+    monitor.setBackgroundColor(barBackgroundColor)
+    monitor.setTextColor(barForegroundColor)
+    monitor.setCursorPos(1, h)
+    monitor.clearLine()
+
+    centerText(text)
+
+    monitor.setBackgroundColor(defaultBackgroundColor)
+    monitor.setTextColor(defaultForegroundColor)
+    monitor.setCursorPos(cursorX, cursorY)
+end
+
+-- displays a colored status bar of the given length
+function displayStatusBar(x, y, length, value, label)
+    local cursorX, cursorY = monitor.getCursorPos()
+    local active = math.floor(value * length + 0.5)
+
+    for i = 1, length do
+        if i <= active then
+            monitor.setBackgroundColor(statusBarActiveBackgroundColor)
+            monitor.setTextColor(statusBarActiveForegroundColor)
+        else
+            monitor.setBackgroundColor(statusBarInactiveBackgroundColor)
+            monitor.setTextColor(statusBarInactiveForegroundColor)
+        end
+        monitor.setCursorPos(x + i - 1, y)
+        local symbol = ' '
+        if i <= #label then
+            symbol = string.sub(label, i, i)
+        end
+        monitor.write(symbol)
+    end
+
+    monitor.setBackgroundColor(defaultBackgroundColor)
+    monitor.setTextColor(defaultForegroundColor)
+    monitor.setCursorPos(cursorX, cursorY)
+end

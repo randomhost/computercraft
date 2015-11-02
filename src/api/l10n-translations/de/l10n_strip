@@ -1,0 +1,9 @@
+--
+-- Strip mining API - translation file
+--
+-- Language: German
+--
+-- (c) 2015, random-host.com
+
+t_stripStart = 'Starte strip'
+t_programEnd = 'Programm abgeschlossen.'

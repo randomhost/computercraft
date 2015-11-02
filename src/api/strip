@@ -17,9 +17,12 @@ local torchPlaceHeight = 0
 local shouldPlaceTorch = false
 local isEvenStrip = true
 
+-- load localization
+l10n.load('strip')
+
 -- load APIs
-os.loadAPI("api/fuel")
-os.loadAPI("api/torch")
+os.loadAPI('api/fuel')
+os.loadAPI('api/torch')
 
 -- sets the height of the strip mining tunnels
 function setStripHeight(height)
@@ -183,10 +186,10 @@ function run()
     torchPlaceHeight = math.floor(stripHeight / 2)
 
     for i = 0, stripCount - 1 do
-        print("Starting strip " .. i + 1)
+        print(l10n_strip.t_stripStart .. ' ' .. i + 1)
         strip(stripIterations)
         nextStrip()
     end
 
-    print("Program finished.")
+    print(l10n_strip.t_programEnd)
 end

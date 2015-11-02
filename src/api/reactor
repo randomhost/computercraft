@@ -1,0 +1,478 @@
+--
+-- Big Reactors control API
+--
+-- (c) 2015, random-host.com
+
+-- config
+local config_shutdownThreshold = 0.75
+local config_startupThreshold = 0.50
+local config_outputNormalThreshold = 5000
+local config_outputLowThreshold = 1000
+local config_showRodLevelBars = true
+local config_enableRedstoneControl = false
+local config_monitorName = 'top'
+local config_reactorName = 'BigReactors-Reactor_0'
+local config_redstoneControlInput = 'back'
+
+-- program info
+local t_programName = 'Reactor Control Programm (RCP)'
+local t_programVersion = 'Version 2.0.0'
+local t_copyright = 'Copyright 2015, Random Mining Inc.'
+local t_website = 'http://random-host.com'
+
+-- runtime variables
+local flag_onlineStatus = false
+local flag_noFuel = false
+local flag_bufferFull = false
+local operationMode = 'manual'
+local reactorBuffer = 0
+local reactorBufferTime = 0
+local monitor
+local reactor
+
+-- load localization
+l10n.load('reactor')
+
+-- load APIs
+os.loadAPI('api/gui')
+
+-- sets the shutdown threshold
+function setShutdownThreshold(threshold)
+    config_shutdownThreshold = threshold
+end
+
+-- sets the startup threshold
+function setStartupThreshold(threshold)
+    config_startupThreshold = threshold
+end
+
+-- sets if control rod level bars should be shown
+function setShowRodLevelBars(enable)
+    config_showRodLevelBars = enable
+end
+
+-- sets if auto startup requires a redstone signal
+function setEnableRedstoneControl(enable)
+    config_enableRedstoneControl = enable
+end
+
+-- sets the monitor name
+function setMonitorName(monitor)
+    config_monitorName = monitor
+end
+
+-- sets the reactor name
+function setReactorName(reactor)
+    config_reactorName = reactor
+end
+
+-- sets redstone control input side
+function setRedstoneControlInput(side)
+    config_redstoneControlInput = side
+end
+
+-- render main GUI frame
+local function displayGui()
+    gui.displayTitleBar(l10n_reactor.t_title)
+    gui.displayFooterBar(t_copyright)
+end
+
+-- fuel & waste status
+local function displayFuelLevels(x, y)
+
+    local maxFuel = reactor.getFuelAmountMax()
+
+    monitor.setCursorPos(x, y)
+    monitor.setTextColor(colors.white)
+    monitor.write(l10n_reactor.t_fuelLevelsTitle)
+
+    monitor.setCursorPos(x, y + 1)
+    monitor.setTextColor(colors.yellow)
+    monitor.write(math.floor(((reactor.getFuelAmount() / maxFuel) * 100) + 0.5) .. '% ' .. l10n_reactor.t_fuelLevelsFuel)
+
+    monitor.setCursorPos(x, y + 2)
+    monitor.setTextColor(colors.lightBlue)
+    monitor.write(math.floor(((reactor.getWasteAmount() / maxFuel) * 100) + 0.5) .. '% ' .. l10n_reactor.t_fuelLevelsWaste)
+end
+
+-- temperature
+local function displayTemperature(x, y, label, temperature)
+
+    monitor.setCursorPos(x, y)
+    monitor.setTextColor(colors.white)
+    monitor.write(label .. ' ')
+
+    if temperature >= 650 then
+        monitor.setTextColor(colors.purple)
+    else if temperature >= 950 then
+        monitor.setTextColor(colors.red)
+    else
+        monitor.setTextColor(colors.green)
+    end
+    end
+    monitor.write(math.floor(temperature + 0.5) .. ' C')
+end
+
+-- temperatures
+local function displayTemperatures(x, y)
+
+    monitor.setCursorPos(x, y)
+    monitor.setTextColor(colors.white)
+    monitor.write(l10n_reactor.t_temperatureTitle)
+
+    displayTemperature(x, y + 1, l10n_reactor.t_temperatureCasing, reactor.getCasingTemperature())
+    displayTemperature(x, y + 2, l10n_reactor.t_temperatureFuel, reactor.getFuelTemperature())
+end
+
+-- control rod levels
+local function displayControlRodLevels(x, y)
+
+    monitor.setCursorPos(x, y)
+    monitor.setTextColor(colors.white)
+    monitor.write(l10n_reactor.t_controlRodLevelsTitle)
+
+    local rods = reactor.getNumberOfControlRods()
+
+    for i = 1, rods do
+        monitor.setCursorPos(x, y + i)
+
+        local percentage = 100 - (reactor.getControlRodLevel(i - 1))
+        local percentagestr = tostring(percentage) .. '%'
+        if config_showRodLevelBars then
+            monitor.setTextColor(colors.green)
+            monitor.write(i .. ': ')
+            gui.displayStatusBar(x + 3, y + i, 16, percentage / 100, ' ' .. percentagestr)
+        else
+            monitor.write(l10n_reactor.t_controlRodLevelsRod .. ' ' .. i .. ': ' .. percentage .. '% ' .. l10n_reactor.t_controlRodLevelsDepth)
+        end
+    end
+
+    monitor.setBackgroundColor(colors.black)
+end
+
+-- buffer
+local function displayBuffer(x, y)
+
+    local maxenergy = 10000000
+    local currentenergy = reactor.getEnergyStored()
+    local percent = currentenergy / maxenergy
+
+    monitor.setCursorPos(x, y)
+    monitor.setTextColor(colors.white)
+    monitor.write(l10n_reactor.t_bufferTitle)
+
+    local energyStr = tostring(currentenergy)
+    monitor.setCursorPos(x + 8 - #energyStr, y + 1)
+    monitor.setTextColor(colors.green)
+    monitor.write(energyStr .. ' RF (' .. math.floor(percent * 100 + 0.5) .. '%)')
+
+    local now = os.clock()
+    if reactorBufferTime > 0 then
+        local time = now - reactorBufferTime
+        local diff = currentenergy - reactorBuffer
+        local diffpersec = diff / time
+        local diffpertick = diffpersec / 20
+
+        local diffpertickrounded = math.floor(diffpertick + 0.5)
+
+        if diffpertickrounded < 0 then
+            monitor.setTextColor(colors.red)
+        end
+        local str = tostring(diffpertickrounded)
+        monitor.setCursorPos(x + 8 - #str, y + 2)
+        monitor.write(str)
+        monitor.setCursorPos(x + 9, y + 2)
+        monitor.write('RF/t')
+    end
+    reactorBuffer = currentenergy
+    reactorBufferTime = now
+
+    monitor.setTextColor(colors.white)
+end
+
+-- output
+local function displayOutput(x, y)
+
+    monitor.setCursorPos(x, y)
+    monitor.setTextColor(colors.white)
+    monitor.write(l10n_reactor.t_outputTitle)
+
+    monitor.setCursorPos(x, y + 1)
+    monitor.setTextColor(colors.red)
+    if reactor.getEnergyProducedLastTick() >= config_outputNormalThreshold then
+        monitor.setTextColor(colors.green)
+    else if reactor.getEnergyProducedLastTick() >= config_outputLowThreshold then
+        monitor.setTextColor(colors.orange)
+    end
+    end
+    monitor.write((math.floor(reactor.getEnergyProducedLastTick() + 0.5)) .. ' RF/t')
+end
+
+-- online status
+local function displayStatus(x, y)
+
+    monitor.setCursorPos(x, y)
+    monitor.setTextColor(colors.white)
+    monitor.write(l10n_reactor.t_statusTitle)
+
+    monitor.setCursorPos(x, y + 1)
+    if flag_onlineStatus then
+        monitor.setTextColor(colors.green)
+        monitor.write(l10n_reactor.t_statusOnline)
+    else
+        monitor.setTextColor(colors.lightGray)
+        monitor.write(l10n_reactor.t_statusOffline)
+    end
+end
+
+-- messages
+local function displayMessages(x, y)
+
+    monitor.setCursorPos(x, y)
+    monitor.setTextColor(colors.white)
+    monitor.write(l10n_reactor.t_messagesTitle)
+
+    local messagePos = 0
+
+    -- online message
+    if flag_onlineStatus then
+        messagePos = messagePos + 1
+        monitor.setCursorPos(x, (y + messagePos))
+        monitor.setTextColor(colors.green)
+        monitor.write(l10n_reactor.t_messagesOnline)
+    end
+
+    -- offline message
+    if flag_onlineStatus == false and flag_noFuel == false and flag_bufferFull == false then
+        messagePos = messagePos + 1
+        monitor.setCursorPos(x, (y + messagePos))
+        monitor.setTextColor(colors.lightGray)
+        monitor.write(l10n_reactor.t_messagesOffline)
+    end
+
+    -- empty message
+    if flag_noFuel == true then
+        messagePos = messagePos + 1
+        monitor.setCursorPos(x, (y + messagePos))
+        monitor.setTextColor(colors.pink)
+        monitor.write(l10n_reactor.t_messagesNoFuel)
+    end
+
+    -- buffer message
+    if flag_bufferFull == true then
+        messagePos = messagePos + 1
+        monitor.setCursorPos(x, (y + messagePos))
+        monitor.setTextColor(colors.pink)
+        monitor.write(l10n_reactor.t_messagesBufferFull)
+    end
+end
+
+-- start button
+local function displayStartButton(x, y)
+    monitor.setCursorPos(x, y)
+    monitor.setTextColor(colors.white)
+    monitor.write(l10n_reactor.t_startButtonTitle)
+
+    monitor.setCursorPos(x, y + 2)
+    if flag_onlineStatus then
+        monitor.setBackgroundColor(colors.red)
+        monitor.write(l10n_reactor.t_startButtonStop)
+    else
+        monitor.setBackgroundColor(colors.green)
+        monitor.write(l10n_reactor.t_startButtonStart)
+    end
+
+    monitor.setBackgroundColor(colors.black)
+end
+
+-- mode button
+local function displayModeButton(x, y)
+
+    monitor.setCursorPos(x, y)
+    monitor.setTextColor(colors.white)
+    monitor.write(l10n_reactor.t_modeButtonTitle)
+
+    monitor.setCursorPos(x, y + 2)
+    if operationMode == 'auto' then
+        monitor.setBackgroundColor(colors.green)
+        monitor.write(l10n_reactor.t_modeButtonAuto)
+    else
+        monitor.setBackgroundColor(colors.red)
+        monitor.write(l10n_reactor.t_modeButtonManual)
+    end
+
+    monitor.setBackgroundColor(colors.black)
+end
+
+-- displays the console text
+local function displayConsoleText()
+    print(t_programName)
+    print(t_programVersion)
+    print('')
+    print(t_copyright)
+    print(t_website)
+    print('')
+
+    print(l10n_reactor.t_consoleRunning)
+end
+
+-- control rod level
+local function controlRodLevel()
+
+    local maxenergy = 10000000
+    local currentenergy = reactor.getEnergyStored()
+
+    if flag_onlineStatus == false then
+        reactor.setAllControlRodLevels(100)
+    else if currentenergy <= maxenergy and currentenergy > 100 then
+        reactor.setAllControlRodLevels(0 + (math.floor(currentenergy / 100000)))
+    else
+        reactor.setAllControlRodLevels(0)
+    end
+    end
+end
+
+-- shutdown
+local function shutdown()
+    reactor.setAllControlRodLevels(100)
+    reactor.setActive(false)
+end
+
+-- startup
+local function startup()
+    if flag_noFuel == false and flag_bufferFull == false then
+        controlRodLevel()
+        reactor.setActive(true)
+    end
+end
+
+-- reactor control
+local function reactorControl()
+
+    local maxEnergy = 10000000
+    local energyPercent = reactor.getEnergyStored() / maxEnergy
+    local redstoneInputSignal = redstone.getInput(config_redstoneControlInput)
+
+    -- Shutdown when fuel empty
+    if (reactor.getFuelAmount() <= 100) and flag_onlineStatus == true then
+        shutdown()
+        flag_noFuel = true
+        return
+    else
+        flag_noFuel = false
+    end
+
+    -- Shutdown when energy full
+    if energyPercent >= config_shutdownThreshold then
+        shutdown()
+        flag_bufferFull = true
+        return
+    else
+        flag_bufferFull = false
+    end
+
+
+    if operationMode == 'auto' and energyPercent <= config_startupThreshold then
+        if not config_enableRedstoneControl or (config_enableRedstoneControl and redstoneInputSignal) then
+            startup()
+        end
+    end
+end
+
+-- operation mode
+local function toggleMode()
+    if operationMode == 'manual' then
+        operationMode = 'auto'
+    else
+        operationMode = 'manual'
+    end
+end
+
+local tickTimer
+
+-- update data and render
+local function updateData()
+    monitor.clear()
+
+    displayGui()
+
+    if not reactor or peripheral.getType(config_reactorName) ~= 'BigReactors-Reactor' then
+        monitor.setCursorPos(10, 4)
+        monitor.setTextColor(colors.red)
+        gui.centerText(l10n_reactor.t_errorNoConnection)
+        tickTimer = os.startTimer(1)
+        return
+    end
+
+    flag_onlineStatus = reactor.getActive()
+
+    controlRodLevel()
+    reactorControl()
+
+    displayFuelLevels(1, 3)
+    displayTemperatures(1, 7)
+    displayOutput(1, 11)
+    displayBuffer(1, 14)
+    displayStatus(1, 18)
+
+    displayMessages(1, 21)
+
+    displayStartButton(21, 11)
+    displayModeButton(21, 16)
+
+    displayControlRodLevels(38, 3)
+
+    tickTimer = os.startTimer(0.1)
+end
+
+-- main run method
+function run()
+
+    -- monitor
+    monitor = gui.setMonitor(config_monitorName)
+
+    -- reactor
+    reactor = peripheral.wrap(config_reactorName)
+
+    displayConsoleText()
+
+    updateData()
+
+    repeat
+        local event, p1, p2, p3, p4 = os.pullEvent()
+        if event == 'timer' and p1 == tickTimer then
+            updateData()
+        end
+
+        if event == 'monitor_touch' and p1 == config_monitorName then
+            local start_x = 20
+            local start_y = 12
+            if p3 >= start_y and p3 <= (start_y + 2) then
+                if (p2 >= start_x and p2 < start_x + 8) then
+                    if flag_onlineStatus == false then
+                        startup()
+                    else
+                        operationMode = 'manual'
+                        shutdown()
+                    end
+                end
+            end
+
+            local mode_x = 20
+            local mode_y = 19
+            if p3 >= mode_y and p3 <= (mode_y + 2) then
+                if (p2 >= mode_x and p2 < mode_x + 10) then
+                    toggleMode()
+                end
+            end
+        end
+    until event == 'key'
+
+    monitor.clear()
+
+    displayGui()
+
+    monitor.setCursorPos(10, 4)
+    monitor.setTextColor(colors.red)
+    gui.centerText(l10n_reactor.t_errorProgramAborted)
+end

@@ -21,8 +21,8 @@ end
 -- checks the torch storage
 local function check()
     if turtle.getItemCount(torchSlot) == 0 then
-        print("Please insert torches. Press any key to continue.")
-        local event = os.pullEvent("key")
+        print(l10n_torch.t_errorNoTorches)
+        local event = os.pullEvent('key')
         check()
     end
 end
@@ -40,6 +40,5 @@ function place(placeUp)
     end
 end
 
-
-
-
+-- load localization
+l10n.load('torch')

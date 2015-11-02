@@ -1,0 +1,36 @@
+--
+-- Big Reactors control API - translation file
+--
+-- Language: English
+--
+-- (c) 2015, random-host.com
+
+t_title = 'Reactor Control Program'
+t_consoleRunning = 'Any key to quit (or hold [CTRL]+[T])'
+t_fuelLevelsTitle = 'Fuel Level:'
+t_fuelLevelsFuel = 'Fuel'
+t_fuelLevelsWaste = 'Waste'
+t_temperatureTitle = 'Temperature:'
+t_temperatureCasing = 'Casing:'
+t_temperatureFuel  = 'Core:  '
+t_controlRodLevelsTitle = 'Control Rod Level:'
+t_controlRodLevelsRod = 'Rod'
+t_controlRodLevelsDepth = 'Depth'
+t_bufferTitle = 'Buffer:'
+t_outputTitle = 'Output'
+t_statusTitle = 'Status:'
+t_statusOnline = 'online'
+t_statusOffline = 'offline'
+t_messagesTitle = 'Messages:'
+t_messagesOnline = 'Generating power'
+t_messagesOffline = 'Standby'
+t_messagesNoFuel = 'No fuel'
+t_messagesBufferFull = 'Buffer full'
+t_startButtonTitle = 'Status Control:'
+t_startButtonStart = ' start '
+t_startButtonStop = ' stop  '
+t_modeButtonTitle = 'Mode Control:'
+t_modeButtonAuto = '   auto   '
+t_modeButtonManual = '  manual  '
+t_errorNoConnection = 'No connection to reactor. Please check!'
+t_errorProgramAborted = 'Program aborted'

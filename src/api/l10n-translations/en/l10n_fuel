@@ -1,0 +1,9 @@
+--
+-- Fuel API - translation file
+--
+-- Language: English
+--
+-- (c) 2015, random-host.com
+
+t_fuelLevel = 'Fuel level is now'
+t_errorNoFuel = 'Please insert fuel. Press any key to continue.'

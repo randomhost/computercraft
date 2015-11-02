@@ -1,0 +1,23 @@
+--
+-- Localization API
+--
+-- (c) 2015, random-host.com
+--
+
+-- configuration
+local l10n_language = 'en'
+
+-- sets the language
+function setLanguage(language)
+    l10n_language = language
+end
+
+-- returns the language
+function getLanguage()
+    return l10n_language
+end
+
+-- loads a localization file
+function load(name)
+    os.loadAPI('api/l10n-translations/' .. l10n_language .. '/l10n_' .. name)
+end

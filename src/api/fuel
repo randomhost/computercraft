@@ -13,7 +13,7 @@ local function refuelAll()
             turtle.refuel(nCount)
         end
     end
-    print("Fuel is now " .. turtle.getFuelLevel())
+    print(l10n_fuel.t_fuelLevel .. ' ' .. turtle.getFuelLevel())
 end
 
 -- checks the fuel level
@@ -21,9 +21,12 @@ function check()
     if turtle.getFuelLevel() == 0 then
         refuelAll()
         if turtle.getFuelLevel() == 0 then
-            print("Please insert fuel. Press any key to continue.")
-            local event = os.pullEvent("key")
+            print(l10n_fuel.t_errorNoFuel)
+            local event = os.pullEvent('key')
             check()
         end
     end
 end
+
+-- load localization
+l10n.load('fuel')

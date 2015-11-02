@@ -1,0 +1,9 @@
+--
+-- Fuel API - translation file
+--
+-- Language: German
+--
+-- (c) 2015, random-host.com
+
+t_fuelLevel = 'Treibstoff jetzt bei'
+t_errorNoFuel = 'Bitte Treibstoff nachfuellen. Beliebige Taste zum Fortsetzen.'

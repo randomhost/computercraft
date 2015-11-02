@@ -9,8 +9,12 @@
 --
 -- (c) 2015, random-host.com
 
+-- load localization API
+os.loadAPI('api/l10n')
+l10n.setLanguage('en')
+
 -- load strip mining API
-os.loadAPI("api/strip")
+os.loadAPI('api/strip')
 
 -- configuration
 strip.setStripHeight(4)

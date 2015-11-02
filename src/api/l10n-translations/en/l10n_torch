@@ -1,0 +1,8 @@
+--
+-- Torch API - translation file
+--
+-- Language: English
+--
+-- (c) 2015, random-host.com
+
+t_errorNoTorches = 'Please insert torches. Press any key to continue.'
