@@ -71,6 +71,11 @@ function setRedstoneControlInput(side)
     config_redstoneControlInput = side
 end
 
+-- sets the operation mode
+function setOperationMode(mode)
+    operationMode = mode
+end
+
 -- render main GUI frame
 local function displayGui()
     gui.displayTitleBar(l10n_reactor.t_title)
@@ -382,9 +387,9 @@ end
 -- operation mode
 local function toggleMode()
     if operationMode == 'manual' then
-        operationMode = 'auto'
+        setOperationMode('auto')
     else
-        operationMode = 'manual'
+        setOperationMode('manual')
     end
 end
 
