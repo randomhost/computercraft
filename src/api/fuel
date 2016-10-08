@@ -1,10 +1,10 @@
 --
 -- Fuel API
 --
--- (c) 2015, random-host.com
+-- (c) 2016, random-host.com
 --
 
--- interates through the inventory and attempts to refuel
+-- iterates through the inventory and attempts to refuel
 local function refuelAll()
     for n = 1, 16 do
         local nCount = turtle.getItemCount(n)
