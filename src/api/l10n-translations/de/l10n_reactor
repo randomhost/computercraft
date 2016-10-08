@@ -1,3 +1,4 @@
+-- vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 syntax=lua
 --
 -- Big Reactors control API - translation file
 --
@@ -11,7 +12,7 @@ t_fuelLevelsTitle = 'Brennmaterial Level:'
 t_fuelLevelsFuel = 'Brennmaterial'
 t_fuelLevelsWaste = 'Abfall'
 t_temperatureTitle = 'Temperatur:'
-t_temperatureCasing = 'Geh�use:'
+t_temperatureCasing = 'Gehaeuse:'
 t_temperatureFuel = 'Kern:   '
 t_controlRodLevelsTitle = 'Kontroll Stab Level:'
 t_controlRodLevelsRod = 'Stab'
@@ -32,5 +33,5 @@ t_startButtonStop = ' stop  '
 t_modeButtonTitle = 'Modus Kontrolle:'
 t_modeButtonAuto = '   auto   '
 t_modeButtonManual = '  manuell '
-t_errorNoConnection = 'Keine Verbindung zum Reaktor. Bitte pr�fen!'
+t_errorNoConnection = 'Keine Verbindung zum Reaktor. Bitte pruefen!'
 t_errorProgramAborted = 'Programm abgebrochen'
