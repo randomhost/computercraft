@@ -3,7 +3,7 @@
 --
 -- Language: German
 --
--- (c) 2015, random-host.com
+-- (c) 2016, random-host.com
 
 t_title = 'Reaktor Kontrollprogramm'
 t_consoleRunning = 'Beliebige Taste zum Beenden (oder [STRG]+[T] halten)'
@@ -11,7 +11,7 @@ t_fuelLevelsTitle = 'Brennmaterial Level:'
 t_fuelLevelsFuel = 'Brennmaterial'
 t_fuelLevelsWaste = 'Abfall'
 t_temperatureTitle = 'Temperatur:'
-t_temperatureCasing = 'Gehäuse:'
+t_temperatureCasing = 'Gehï¿½use:'
 t_temperatureFuel = 'Kern:   '
 t_controlRodLevelsTitle = 'Kontroll Stab Level:'
 t_controlRodLevelsRod = 'Stab'
@@ -32,5 +32,5 @@ t_startButtonStop = ' stop  '
 t_modeButtonTitle = 'Modus Kontrolle:'
 t_modeButtonAuto = '   auto   '
 t_modeButtonManual = '  manuell '
-t_errorNoConnection = 'Keine Verbindung zum Reaktor. Bitte prüfen!'
+t_errorNoConnection = 'Keine Verbindung zum Reaktor. Bitte prï¿½fen!'
 t_errorProgramAborted = 'Programm abgebrochen'

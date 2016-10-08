@@ -3,6 +3,6 @@
 --
 -- Language: English
 --
--- (c) 2015, random-host.com
+-- (c) 2016, random-host.com
 
 t_errorNoTorches = 'Please insert torches. Press any key to continue.'

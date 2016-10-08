@@ -1,7 +1,7 @@
 --
 -- Strip mining API
 --
--- (c) 2015, random-host.com
+-- (c) 2016, random-host.com
 --
 
 -- configuration
@@ -10,6 +10,7 @@ local stripCount = 4
 local stripInterval = 3
 local stripLength = 40
 local torchInterval = 3
+local enableTorches = true
 
 -- runtime variables
 local torchIntervalCounter = 0
@@ -46,7 +47,7 @@ end
 
 -- enables or disables placing of torches
 function setEnableTorches(enable)
-    torch.setEnabled(enable)
+    enableTorches = enable
 end
 
 -- sets the storage slot for torches
@@ -125,7 +126,9 @@ local function stripColumn(reversed)
 
             if (not reversed and torchPlaceHeight == i) or
                     (reversed and (stripHeight - torchPlaceHeight) == i) then
-                torch.place(reversed)
+                if (enableTorches == true) then
+                    torch.place(reversed)
+                end
 
                 shouldPlaceTorch = false
                 torchIntervalCounter = 0

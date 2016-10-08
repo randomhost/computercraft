@@ -3,7 +3,7 @@
 --
 -- Language: English
 --
--- (c) 2015, random-host.com
+-- (c) 2016, random-host.com
 
 t_title = 'Reactor Control Program'
 t_consoleRunning = 'Any key to quit (or hold [CTRL]+[T])'

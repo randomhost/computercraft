@@ -3,6 +3,6 @@
 --
 -- Language: German
 --
--- (c) 2015, random-host.com
+-- (c) 2016, random-host.com
 
 t_errorNoTorches = 'Bitte Fackeln nachfuellen. Beliebige Taste zum Fortsetzen.'
