@@ -1,5 +1,7 @@
-ComputerCraft LUA scripts
+ComputerCraft LUA Scripts
 =========================
+
+![screenshot](screenshot.jpg)
 
 This small collection of [ComputerCraft][0] LUA APIs and scripts is used on the
 [Minecraft][1] servers on [random-host.com][2]. They may not be very fancy and
@@ -7,14 +9,14 @@ potentially buggy but they sorta do the job.
 
 You can use them if you want but don't expect any support.
 
-Table of contents
+Table of Contents
 -----------------
 
-* [Available programs](#available-programs)
+* [Available Programs](#available-programs)
 * [Available APIs](#available-apis)
 * [License](#license)
 
-Available programs
+Available Programs
 ------------------
 
 These programs make heavy use of ComputerCraft APIs.
