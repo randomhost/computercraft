@@ -1,0 +1,9 @@
+-- vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 syntax=lua
+--
+-- Torch API - translation file
+--
+-- Language: Japanese
+--
+-- (c) 2016, random-host.com
+
+t_errorNoTorches = '松明を入れてください。何でもキイをおせるください。'
