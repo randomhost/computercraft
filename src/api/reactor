@@ -2,7 +2,7 @@
 --
 -- Big Reactors control API
 --
--- (c) 2016, random-host.com
+-- (c) 2022, Random-Host.tv
 
 -- config
 local config_shutdownThreshold = 0.75

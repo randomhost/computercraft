@@ -4,7 +4,7 @@
 --
 -- Language: German
 --
--- (c) 2016, random-host.com
+-- (c) 2022, Random-Host.tv
 
 t_fuelLevel = 'Treibstoff jetzt bei'
 t_errorNoFuel = 'Bitte Treibstoff nachfuellen. Beliebige Taste zum Fortsetzen.'

@@ -4,7 +4,7 @@
 --
 -- Language: German
 --
--- (c) 2016, random-host.com
+-- (c) 2022, Random-Host.tv
 
 t_stripStart = 'Starte strip'
 t_programEnd = 'Programm abgeschlossen.'

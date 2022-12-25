@@ -1,58 +1,70 @@
-ComputerCraft LUA Scripts
-=========================
+# ComputerCraft LUA Scripts
 
 ![screenshot](screenshot.jpg)
 
-This small collection of [ComputerCraft][0] LUA APIs and scripts is used on the
-[Minecraft][1] servers on [random-host.com][2]. They may not be very fancy and
-potentially buggy but they sorta do the job.
+## Table of Contents
 
-You can use them if you want but don't expect any support.
+<!-- TOC -->
+* [1. Purpose](#1-purpose)
+* [2. Available Programs](#2-available-programs)
+* [3. Available APIs](#3-available-apis)
+  * [3.1. `fuel`](#31-fuel)
+  * [3.2. `gui`](#32-gui)
+  * [3.4. `l10n`](#34-l10n)
+  * [3.5. `reactor`](#35-reactor)
+  * [3.6. `strip`](#36-strip)
+  * [3.7. `torch`](#37-torch)
+* [4. License](#4-license)
+<!-- TOC -->
 
-Table of Contents
------------------
+---
 
-* [Available Programs](#available-programs)
-* [Available APIs](#available-apis)
-* [License](#license)
+## 1. Purpose
 
-Available Programs
-------------------
+This small collection of [ComputerCraft][1] LUA APIs and scripts was used on the
+[Minecraft][2] servers on [Random-Host.tv][3]. They may not be very fancy and
+potentially buggy, but they did the job back in 2015.
+
+You can use them if you want, but don't expect any support.
+
+[🡹 Back to top](#table-of-contents)
+
+## 2. Available Programs
 
 These programs make heavy use of ComputerCraft APIs.
 
 Even though most of the program's code should be self-explanatory, you may wish
 to read the [Available APIs](#available-apis) section to learn more about the
-APIs used within these programs and how those API's are used to configure the
+APIs used within these programs and how those APIs are used to configure the
 behavior of each individual program.
 
 The following programs are included:
 
-* `layer`
+* `layer`  
+   Mines a layer of blocks such as obsidian.
 
-    Mines a layer of blocks such as obsidian.
-    
-* `reactor`
+* `reactor`  
+   Controls a passively cooled [BigReactors][4] reactor.
 
-    Controls a passively cooled Big Reactors reactor.
+* `strip`  
+   Classical strip mining program.
 
-* `strip`
+[🡹 Back to top](#table-of-contents)
 
-    Classical strip mining program.
-
-Available APIs
---------------
+## 3. Available APIs
 
 An API (Application Programming Interface) is a collection of code that, rather
 than being run directly by the user as a program, is meant to be used by other
 programs.
 
 To learn more about ComputerCraft APIs, please refer to the Computercraft Wiki's
-[APIs][3] category.
+[APIs][5] category.
 
 The following APIs are included:
 
-### fuel
+[🡹 Back to top](#table-of-contents)
+
+### 3.1. `fuel`
 
 Provides functions for auto-refueling turtles.
 
@@ -63,7 +75,9 @@ This API is primarily a dependency of the `strip` API.
     Checks the fuel level of the turtle and attempts to refuel using the first
     suitable fuel item found in the turtle's inventory.
 
-### gui
+[🡹 Back to top](#table-of-contents)
+
+### 3.2. `gui`
 
 Provides functions for printing GUI items on monitors.
 
@@ -148,7 +162,9 @@ other programs as well.
 
     Renders a colored status bar of the given length.
 
-### l10n
+[🡹 Back to top](#table-of-contents)
+
+### 3.4. `l10n`
 
 Provides functions for loading localization strings.
 
@@ -169,14 +185,16 @@ This API is primarily a dependency of all APIs which print text.
     Loads the localization file identified by the given name. This will usually
     be the name of the API which will be using the localization strings.
 
-### reactor
+[🡹 Back to top](#table-of-contents)
+
+### 3.5. `reactor`
 
 Provide functions for controlling a [BigReactors][4] reactor.
 
 * `reactor.setShutdownThreshold(number threshold)`
 
     Sets the shutdown threshold. This is the buffer fill level at which the
-    reactor will automatically shutdown.
+    reactor will automatically shut down.
     
     Default: `0.75` (75%)
 
@@ -201,7 +219,7 @@ Provide functions for controlling a [BigReactors][4] reactor.
     the configured startup threshold before the reactor is started.
     
     This can be used to delegate auto startup control to an external device such
-    as [Ender IO][5]'s [Power Monitor][6].
+    as [Ender IO][6]'s [Power Monitor][7].
     
     Default: `false`
 
@@ -240,7 +258,9 @@ Provide functions for controlling a [BigReactors][4] reactor.
     Runs the reactor control program main loop. The program will keep running
     until the user hits a key or terminates the program by holding `[CTRL]+[T]`. 
 
-### strip
+[🡹 Back to top](#table-of-contents)
+
+### 3.6. `strip`
 
 Provides functions for strip mining using turtles.
 
@@ -292,7 +312,9 @@ Provides functions for strip mining using turtles.
     
     When the program has finished, the turtle will remain at the last position.
 
-### torch
+[🡹 Back to top](#table-of-contents)
+
+### 3.7. `torch`
 
 Provides functions for placing torches.
 
@@ -310,16 +332,19 @@ This API is primarily a dependency of the `strip` API.
     block "above" the turtle's front side, otherwise it will be placed one block
     "below".
 
-License
--------
+[🡹 Back to top](#table-of-contents)
+
+## 4. License
 
 See LICENSE.txt for full license details.
 
+[🡹 Back to top](#table-of-contents)
 
-[0]: http://www.computercraft.info/
-[1]: https://minecraft.net/
-[2]: https://www.random-host.com/
-[3]: http://computercraft.info/wiki/Category:APIs
-[4]: http://www.big-reactors.com/
-[5]: http://enderio.com/
-[6]: http://wiki.enderio.com/Power_Monitor
+
+[1]: https://github.com/dan200/ComputerCraft
+[2]: https://www.minecraft.net/
+[3]: https://www.random-host.tv/
+[4]: https://github.com/erogenousbeef-zz/BigReactors
+[5]: https://computercraft.info/wiki/Category:APIs
+[6]: https://github.com/SleepyTrousers/EnderIO
+[7]: https://github.com/SleepyTrousers/EnderIO/wiki/Power-Monitors

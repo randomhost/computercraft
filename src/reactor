@@ -2,7 +2,7 @@
 --
 -- Controls a passively cooled Big Reactors reactor
 --
--- (c) 2016, random-host.com
+-- (c) 2022, Random-Host.tv
 
 -- load localization API
 os.loadAPI('api/l10n')

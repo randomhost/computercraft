@@ -4,7 +4,7 @@
 --
 -- Language: English
 --
--- (c) 2016, random-host.com
+-- (c) 2022, Random-Host.tv
 
 t_fuelLevel = 'Fuel level is now'
 t_errorNoFuel = 'Please insert fuel. Press any key to continue.'
