@@ -336,7 +336,7 @@ This API is primarily a dependency of the `strip` API.
 
 ## 4. License
 
-See LICENSE.txt for full license details.
+See [LICENSE](LICENSE) for full license details.
 
 [🡹 Back to top](#table-of-contents)
 
